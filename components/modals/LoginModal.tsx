@@ -4,6 +4,7 @@ import React from "react";
 import Input from "../Input";
 import Modal from "../Modal";
 import useRegisterModal from "@/hooks/useRegisterModal";
+import { signIn } from "next-auth/react";
 
 type Props = {};
 
@@ -26,14 +27,18 @@ const LoginModal = (props: Props) => {
   const onSubmit = React.useCallback(() => {
     try {
       setIsLoading(true);
-      //   Todo add login logic
+      signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
       loginModal.onClose();
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
-  }, [loginModal]);
+  }, [email, password, loginModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
