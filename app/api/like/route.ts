@@ -29,6 +29,34 @@ export async function POST(request: Request) {
       where: { id: postId },
       data: { likeIds: updatedLikeIds },
     });
+    try {
+      const post = await prisma.post.findUnique({
+        where: { id: postId },
+      });
+      if (post?.userId) {
+        await prisma.notification.create({
+          data: {
+            userId: post.userId,
+            body: `${currentUser.username} liked your post`,
+          },
+        });
+
+        await prisma.user.update({
+          where: {
+            id: post.userId,
+          },
+          data: {
+            hasNotification: true,
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return NextResponse.json(
+        { error: `Couldn't trigger notification` },
+        { status: 500 }
+      );
+    }
     return NextResponse.json(updatedPost, { status: 200 });
   } catch (error) {
     console.log(error);

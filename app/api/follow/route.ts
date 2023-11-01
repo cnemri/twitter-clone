@@ -24,6 +24,30 @@ export async function POST(request: Request) {
       where: { id: currentUser.id },
       data: { followingIds: updatedFollowingIds },
     });
+    try {
+      await prisma.notification.create({
+        data: {
+          userId: userId,
+          body: `${currentUser.username} followed you`,
+        },
+      });
+
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          hasNotification: true,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return NextResponse.json(
+        { error: `Couldn't trigger notification` },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
     console.log(error);

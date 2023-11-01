@@ -25,6 +25,7 @@ const Sidebar = (props: Props) => {
       icon: BsBellFill,
       href: "/notifications",
       auth: true,
+      alert: currentUser?.hasNotification,
     },
     {
       label: "Profile",
