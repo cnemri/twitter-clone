@@ -5,6 +5,7 @@ import fetcher from "@/libs/fetcher";
 
 const useUsers = () => {
   const { data, error, isLoading, mutate } = useSWR("/api/users", fetcher);
+
   return {
     data,
     error,
