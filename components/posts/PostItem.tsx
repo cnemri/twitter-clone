@@ -5,7 +5,8 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/navigation";
 import React from "react";
 import Avatar from "../Avatar";
-import { AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart, AiOutlineMessage } from "react-icons/ai";
+import useLike from "@/hooks/useLike";
 
 type Props = {
   data: Record<string, any>;
@@ -16,6 +17,10 @@ const PostItem = ({ data, userId }: Props) => {
   const router = useRouter();
   const loginModal = useLoginModal();
   const { data: currentUser } = useCurrentUser();
+  const { toggleLike, hasLiked } = useLike({
+    postId: data.id,
+    userId: userId,
+  });
   const goToUser = React.useCallback(
     (e: any) => {
       e.stopPropagation();
@@ -29,14 +34,16 @@ const PostItem = ({ data, userId }: Props) => {
   const onLike = React.useCallback(
     (e: any) => {
       e.stopPropagation();
-      loginModal.onOpen();
+      if (!currentUser) return loginModal.onOpen();
+      toggleLike();
     },
-    [loginModal]
+    [loginModal, currentUser, toggleLike]
   );
   const createdAt = React.useMemo(() => {
     if (!data?.createdAt) return null;
     return formatDistanceToNowStrict(new Date(data.createdAt));
   }, [data.createdAt]);
+  const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
   return (
     <div
       onClick={goToPost}
@@ -108,9 +115,8 @@ const PostItem = ({ data, userId }: Props) => {
                 hover:text-red-500
             "
             >
-              <AiOutlineHeart size={20} />
-              <p>{data.comments?.length || 0}</p>
-              {/* <p>{data.likedIds.length}</p> */}
+              <LikeIcon size={20} color={hasLiked ? "red" : ""} />
+              <p>{data.likeIds.length}</p>
             </div>
           </div>
         </div>
