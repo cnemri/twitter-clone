@@ -30,7 +30,8 @@ const LoginModal = (props: Props) => {
       signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: "/",
       });
       loginModal.onClose();
     } catch (error) {

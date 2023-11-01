@@ -2,11 +2,19 @@
 import useUsers from "@/hooks/useUsers";
 import React from "react";
 import Avatar from "../Avatar";
+import { ClipLoader } from "react-spinners";
 
 type Props = {};
 
 const FollowBar = (props: Props) => {
-  const { data: users = [] } = useUsers();
+  const { data: users = [], isLoading } = useUsers();
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <ClipLoader color="lightblue" size={80} />
+      </div>
+    );
+
   if (users.length === 0) return null;
   return (
     <div className="px-6 py-4 hidden lg:block">

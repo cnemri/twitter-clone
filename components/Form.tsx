@@ -9,6 +9,7 @@ import usePosts from "@/hooks/usePosts";
 import toast from "react-hot-toast";
 import axios from "axios";
 import usePost from "@/hooks/usePost";
+import { ClipLoader } from "react-spinners";
 
 type Props = {
   placeholder: string;
@@ -20,7 +21,8 @@ const Form = ({ placeholder, isComment, postId }: Props) => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isLoading: isLoadingCurrentUser } =
+    useCurrentUser();
   const { mutate: mutatePosts } = usePosts();
   const { mutate: mutatePost } = usePost(postId as string);
 
@@ -46,6 +48,13 @@ const Form = ({ placeholder, isComment, postId }: Props) => {
     }
   }, [body, mutatePosts, isComment, postId, mutatePost]);
 
+  if (isLoadingCurrentUser)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <ClipLoader color="lightblue" size={80} />
+      </div>
+    );
+
   return (
     <div className="border-b-[1px] border-neutral-800 px-5 py-2">
       {currentUser ? (
@@ -55,6 +64,7 @@ const Form = ({ placeholder, isComment, postId }: Props) => {
           </div>
           <div className="w-full">
             <textarea
+              id="tweet"
               disabled={isLoading}
               onChange={(event) => setBody(event.target.value)}
               value={body}

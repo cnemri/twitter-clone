@@ -1,4 +1,5 @@
 "use client";
+import useCurrentUser from "@/hooks/useCurrentUser";
 import useLoginModal from "@/hooks/useLoginModal";
 import React from "react";
 import { FaFeather } from "react-icons/fa";
@@ -6,10 +7,16 @@ import { FaFeather } from "react-icons/fa";
 type Props = {};
 
 const SidebarTweetButton = (props: Props) => {
+  const { data: currentUser } = useCurrentUser();
   const loginModal = useLoginModal();
   const onClick = React.useCallback(() => {
-    loginModal.onOpen();
-  }, [loginModal]);
+    // if no useropen login modal else put mouse in text area with id tweet
+    if (!currentUser) {
+      loginModal.onOpen();
+    } else {
+      document.getElementById("tweet")?.focus();
+    }
+  }, [currentUser, loginModal]);
   return (
     <div onClick={onClick}>
       <div className="mt-6 lg:hidden rounded-full h-14 w-14 p-4 flex items-center justify-center bg-sky-500 hover:bg-opacity-80 transition cursor-pointer">
