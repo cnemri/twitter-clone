@@ -1,5 +1,6 @@
 "use client";
 import Header from "@/components/Header";
+import PostFeed from "@/components/posts/PostFeed";
 import UserBio from "@/components/users/UserBio";
 import UserHero from "@/components/users/UserHero";
 import useUser from "@/hooks/useUser";
@@ -13,7 +14,8 @@ type Props = {
 };
 
 const UserView = ({ params }: Props) => {
-  const { data: fetchedUser, isLoading } = useUser(params.userId as string);
+  const { userId } = params;
+  const { data: fetchedUser, isLoading } = useUser(userId as string);
   if (isLoading || !fetchedUser)
     return (
       <div className="flex justify-center items-center h-full">
@@ -23,8 +25,9 @@ const UserView = ({ params }: Props) => {
   return (
     <>
       <Header showBackArrow label={`${fetchedUser.name}'s profile`} />
-      <UserHero userId={fetchedUser.id as string} />
-      <UserBio userId={fetchedUser.id as string} />
+      <UserHero userId={userId as string} />
+      <UserBio userId={userId as string} />
+      <PostFeed userId={userId as string} />
     </>
   );
 };
